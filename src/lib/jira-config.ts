@@ -57,9 +57,6 @@ export function getHomeJiraConfigPath(): string {
   return path.join(getHomeChangesetDir(), "jira.json");
 }
 
-export async function getRepoJiraConfigPath(): Promise<string> {
-  return path.join(await getChangesetDir(), "jira.json");
-}
 
 export async function ensureHomeChangesetDir(): Promise<void> {
   await mkdir(getHomeChangesetDir(), { recursive: true });
@@ -88,15 +85,14 @@ export async function saveHomeJiraConfig(config: JiraConfig): Promise<void> {
 
 export async function loadJiraConfig(): Promise<JiraConfig> {
   const homeConfig = await loadJiraConfigFile(getHomeJiraConfigPath());
-  const repoConfig = await loadJiraConfigFile(await getRepoJiraConfigPath());
 
-  const baseUrl = process.env.JIRA_BASE_URL ?? homeConfig.baseUrl ?? repoConfig.baseUrl;
-  const email = process.env.JIRA_EMAIL ?? homeConfig.email ?? repoConfig.email;
-  const apiToken = process.env.JIRA_API_TOKEN ?? homeConfig.apiToken ?? repoConfig.apiToken;
+  const baseUrl = homeConfig.baseUrl;
+  const email = homeConfig.email;
+  const apiToken = homeConfig.apiToken;
 
   if (!baseUrl || !email || !apiToken) {
     throw new Error(
-      "Missing Jira config. Set JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN, or run `npx changeset-jira init`."
+      "Missing Jira config. Run `npx changeset-jira init`."
     );
   }
 

@@ -60,7 +60,6 @@ export async function runInit(): Promise<void> {
   console.log("Jira base URL example: https://your-domain.atlassian.net");
   console.log("API token can be created at https://id.atlassian.com/manage-profile/security/api-tokens");
   console.log("These values are stored in ~/.changeset/jira.json.");
-  console.log("You can also skip init and provide JIRA_BASE_URL/JIRA_EMAIL/JIRA_API_TOKEN env vars.");
 
   await ensureHomeChangesetDir();
 
@@ -77,9 +76,9 @@ export async function runInit(): Promise<void> {
     }
   }
 
-  const baseUrl = await promptForBaseUrl(existingConfig?.baseUrl ?? process.env.JIRA_BASE_URL);
-  const email = await promptForEmail(existingConfig?.email ?? process.env.JIRA_EMAIL);
-  const apiToken = await promptForApiToken(existingConfig?.apiToken ?? process.env.JIRA_API_TOKEN);
+  const baseUrl = await promptForBaseUrl(existingConfig?.baseUrl);
+  const email = await promptForEmail(existingConfig?.email);
+  const apiToken = await promptForApiToken(existingConfig?.apiToken);
 
   const payload: JiraConfig = { baseUrl, email, apiToken };
   await saveHomeJiraConfig(payload);

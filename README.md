@@ -18,13 +18,7 @@ pnpm changeset init
 npx changeset-jira init
 ```
 
-This writes `~/.changeset/jira.json` (global config). You can also provide env vars instead:
-
-```bash
-export JIRA_BASE_URL="https://your-domain.atlassian.net"
-export JIRA_EMAIL="you@example.com"
-export JIRA_API_TOKEN="your_api_token"
-```
+This writes `~/.changeset/jira.json` (global config).
 
 ## Usage
 
