@@ -5,9 +5,8 @@ import { promisify } from "node:util";
 
 const execFile = promisify(execFileCb);
 
-const TICKET_PREFIX = "KB2CW";
-const TICKET_ID_PATTERN = new RegExp(`${TICKET_PREFIX}-\\d+`, "i");
-const DESCRIPTION_PATTERN = new RegExp(`^\\[${TICKET_PREFIX}-\\d+\\] [A-Za-z][^\\r\\n]+$`);
+const TICKET_ID_PATTERN = /[A-Z][A-Z0-9]*-\d+/i;
+const DESCRIPTION_PATTERN = /^\[[A-Za-z][A-Za-z0-9]*-\d+\] [A-Za-z][^\r\n]+$/;
 
 export async function getCurrentBranch(): Promise<string | null> {
   try {
@@ -56,12 +55,12 @@ export async function promptForTicketId(
     const input = (await rl.question(`Jira Ticket ID${defaultLabel}: `)).trim();
     const candidate = (input || defaultTicketId || "").trim();
     if (!candidate) {
-      console.error("Ticket ID is required. Example: KB2CW-1234.");
+      console.error("Ticket ID is required. Example: PROJ-1234.");
       continue;
     }
     const normalized = normalizeTicketId(candidate);
     if (!normalized) {
-      console.error("Invalid ticket ID format. Example: KB2CW-1234.");
+      console.error("Invalid ticket ID format. Example: PROJ-1234.");
       continue;
     }
     return normalized;

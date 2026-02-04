@@ -2,7 +2,7 @@
 
 `changeset-jira` will fetch a Jira ticket summary and create a Changeset with a single-line description in this format:
 
-`[KB2CW-XXXX] Verb-started English description.`
+`[PROJ-1234] Verb-started English description.`
 
 ## Setup
 
@@ -34,7 +34,7 @@ npx changeset-jira
 
 What happens:
 
-- The CLI asks for a Jira ticket ID, defaulting to the first `JIRA-XXXX` found in your branch name.
+- If a ticket ID is found in the branch name, it is used automatically. Otherwise the CLI asks for one.
 - It fetches the Jira summary and formats the description as `[JIRA-XXXX] {summary}`.
 - It runs the standard Changeset prompts for package selection and bump types.
 - The summary entered in the Changeset prompt is replaced with the Jira summary to enforce the required format.
@@ -45,4 +45,4 @@ Note: If you prefer local scripts, `pnpm changeset-jira` runs the same flow.
 
 If the Jira API fails or the summary does not match the required format, the CLI will ask you to enter the description manually. The input must be a single line in this format:
 
-`[KB2CW-XXXX] Verb-started English description.`
+`[PROJ-1234] Verb-started English description.`

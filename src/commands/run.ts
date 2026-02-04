@@ -20,7 +20,10 @@ export async function runChangesetJira(): Promise<void> {
     await ensureChangesetConfig();
 
     const defaultTicketId = await getDefaultTicketId();
-    const ticketId = await promptForTicketId(rl, defaultTicketId);
+    const ticketId = defaultTicketId ?? (await promptForTicketId(rl, null));
+    if (defaultTicketId) {
+      console.log(`Using ticket ID from branch name: ${defaultTicketId}`);
+    }
 
     let description: string | null = null;
     try {
