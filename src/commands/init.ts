@@ -1,7 +1,7 @@
 import { confirm, input, password } from "@inquirer/prompts";
 import {
   ensureChangesetDir,
-  jiraConfigPath,
+  getJiraConfigPath,
   loadExistingJiraConfig,
   saveJiraConfig,
   type JiraConfig
@@ -55,9 +55,17 @@ async function promptForApiToken(defaultValue?: string) {
 }
 
 export async function runInit(): Promise<void> {
+  console.log("Initializing Jira credentials.");
+  console.log("You will be asked for Jira base URL, email, and API token.");
+  console.log("Jira base URL example: https://your-domain.atlassian.net");
+  console.log("API token can be created at https://id.atlassian.com/manage-profile/security/api-tokens");
+  console.log("These values are stored locally in .changeset/jira.json.");
+  console.log("You can also skip init and provide JIRA_BASE_URL/JIRA_EMAIL/JIRA_API_TOKEN env vars.");
+
   await ensureChangesetDir();
 
   const existingConfig = await loadExistingJiraConfig();
+  const jiraConfigPath = await getJiraConfigPath();
   if (existingConfig) {
     const shouldOverwrite = await confirm({
       message: `Overwrite existing Jira config at ${jiraConfigPath}?`,

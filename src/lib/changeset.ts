@@ -3,12 +3,13 @@ import { access, readdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import process from "node:process";
-import { changesetDir, cwd } from "./jira-config";
+import { getChangesetDir, getRepoRoot } from "./jira-config";
 
 const require = createRequire(import.meta.url);
 
 export async function ensureChangesetConfig(): Promise<void> {
   try {
+    const changesetDir = await getChangesetDir();
     await access(path.join(changesetDir, "config.json"));
   } catch {
     throw new Error("Changesets config not found. Run `pnpm changeset init` first.");
@@ -16,6 +17,7 @@ export async function ensureChangesetConfig(): Promise<void> {
 }
 
 export async function listChangesetFiles(): Promise<Set<string>> {
+  const changesetDir = await getChangesetDir();
   const entries = await readdir(changesetDir, { withFileTypes: true });
   const files = entries
     .filter(entry => entry.isFile())
@@ -26,10 +28,11 @@ export async function listChangesetFiles(): Promise<Set<string>> {
 }
 
 export async function runChangesetAdd(): Promise<void> {
-  const changesetBin = require.resolve("@changesets/cli/bin.js", { paths: [cwd] });
+  const repoRoot = await getRepoRoot();
+  const changesetBin = require.resolve("@changesets/cli/bin.js", { paths: [repoRoot] });
   await new Promise<void>((resolve, reject) => {
     const child = spawn(process.execPath, [changesetBin, "add"], {
-      cwd,
+      cwd: repoRoot,
       stdio: "inherit"
     });
     child.on("error", reject);

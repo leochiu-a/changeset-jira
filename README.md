@@ -18,7 +18,7 @@ pnpm changeset init
 npx changeset-jira init
 ```
 
-This writes `.changeset/jira.json` locally. You can also provide env vars instead:
+This writes `.changeset/jira.json` at the repo root (even if you run the command in a subdirectory). You can also provide env vars instead:
 
 ```bash
 export JIRA_BASE_URL="https://your-domain.atlassian.net"
@@ -35,7 +35,7 @@ npx changeset-jira
 What happens:
 
 - If a ticket ID is found in the branch name, it is used automatically. Otherwise the CLI asks for one.
-- It fetches the Jira summary and formats the description as `[JIRA-XXXX] {summary}`.
+- It fetches the Jira summary and formats the description as `[PROJ-1234] {summary}`.
 - It runs the standard Changeset prompts for package selection and bump types.
 - The summary entered in the Changeset prompt is replaced with the Jira summary to enforce the required format.
 
