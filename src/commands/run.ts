@@ -34,6 +34,9 @@ export async function runChangesetJira(): Promise<void> {
         description = candidate;
       } else {
         console.warn("Jira summary does not match required format. Falling back to manual input.");
+        console.warn(`Raw Jira summary: ${summary}`);
+        console.warn(`Generated summary: ${candidate}`);
+        console.warn("Required format: [PROJ-1234] Description.");
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -46,10 +49,10 @@ export async function runChangesetJira(): Promise<void> {
 
     console.log(`Using changeset summary: ${description}`);
     console.log("Running changeset add. Follow the prompts for packages and bump types.");
-    console.log("Note: the summary you enter there will be replaced with the Jira summary.");
+    console.log("Note: the summary prompt will be auto-filled and replaced with the Jira summary.");
 
     const before = await listChangesetFiles();
-    await runChangesetAdd();
+    await runChangesetAdd(description);
     const after = await listChangesetFiles();
 
     const newFiles = [...after].filter(file => !before.has(file));

@@ -2,7 +2,7 @@
 
 `changeset-jira` will fetch a Jira ticket summary and create a Changeset with a single-line description in this format:
 
-`[PROJ-1234] Verb-started English description.`
+`[PROJ-1234] Description.`
 
 ## Setup
 
@@ -39,4 +39,4 @@ Note: If you prefer local scripts, `pnpm changeset-jira` runs the same flow.
 
 If the Jira API fails or the summary does not match the required format, the CLI will ask you to enter the description manually. The input must be a single line in this format:
 
-`[PROJ-1234] Verb-started English description.`
+`[PROJ-1234] Description.`

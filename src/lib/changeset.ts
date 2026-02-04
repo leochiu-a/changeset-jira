@@ -27,16 +27,44 @@ export async function listChangesetFiles(): Promise<Set<string>> {
   return new Set(files);
 }
 
-export async function runChangesetAdd(): Promise<void> {
+export async function runChangesetAdd(summary?: string): Promise<void> {
   const repoRoot = await getRepoRoot();
   const changesetBin = require.resolve("@changesets/cli/bin.js", { paths: [repoRoot] });
+  const args = [changesetBin, "add"];
   await new Promise<void>((resolve, reject) => {
-    const child = spawn(process.execPath, [changesetBin, "add"], {
+    const child = spawn(process.execPath, args, {
       cwd: repoRoot,
-      stdio: "inherit"
+      stdio: ["pipe", "pipe", "pipe"]
+    });
+    let summaryInjected = false;
+    let outputBuffer = "";
+
+    const maybeInjectSummary = (chunk: string) => {
+      if (!summary || summaryInjected) {
+        return;
+      }
+      outputBuffer += chunk;
+      if (outputBuffer.includes("Please enter a summary for this change")) {
+        child.stdin.write(`${summary}\n`);
+        summaryInjected = true;
+      }
+      if (outputBuffer.length > 2000) {
+        outputBuffer = outputBuffer.slice(-2000);
+      }
+    };
+
+    process.stdin.pipe(child.stdin);
+    child.stdout.on("data", data => {
+      process.stdout.write(data);
+      maybeInjectSummary(String(data));
+    });
+    child.stderr.on("data", data => {
+      process.stderr.write(data);
+      maybeInjectSummary(String(data));
     });
     child.on("error", reject);
     child.on("exit", code => {
+      process.stdin.unpipe(child.stdin);
       if (code === 0) {
         resolve();
       } else {

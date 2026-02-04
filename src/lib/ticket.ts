@@ -6,7 +6,7 @@ import { promisify } from "node:util";
 const execFile = promisify(execFileCb);
 
 const TICKET_ID_PATTERN = /[A-Z][A-Z0-9]*-\d+/i;
-const DESCRIPTION_PATTERN = /^\[[A-Za-z][A-Za-z0-9]*-\d+\] [A-Za-z][^\r\n]+$/;
+const DESCRIPTION_PATTERN = /^\[[A-Za-z][A-Za-z0-9]*-\d+\] [^\r\n]+$/;
 
 export async function getCurrentBranch(): Promise<string | null> {
   try {
@@ -76,7 +76,7 @@ export async function promptForDescription(rl: ReturnType<typeof createInterface
       continue;
     }
     if (!isValidDescription(input, ticketId)) {
-      console.error(`Description must be a single line in format: [${ticketId}] Verb-started English description.`);
+      console.error(`Description must be a single line in format: [${ticketId}] Description.`);
       continue;
     }
     return input;
