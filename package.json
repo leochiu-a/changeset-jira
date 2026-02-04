@@ -1,15 +1,20 @@
 {
   "name": "changeset-jira",
-  "private": true,
   "version": "0.0.0",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "changeset-jira": "dist/changeset-jira.mjs"
   },
   "scripts": {
     "dev": "tsdown --watch --no-dts",
     "build": "tsdown --clean",
-    "changeset-jira": "tsdown --clean --no-dts && node dist/changeset-jira.mjs"
+    "changeset": "changeset",
+    "changeset-jira": "tsdown --clean --no-dts && node dist/changeset-jira.mjs",
+    "release": "changeset publish",
+    "version": "changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
@@ -19,7 +24,6 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^8.2.0",
-    "global": "link:../../Library/pnpm/global/5/node_modules/global",
     "meow": "^14.0.0"
   }
 }

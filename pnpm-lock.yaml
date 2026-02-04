@@ -11,9 +11,6 @@ importers:
       '@inquirer/prompts':
         specifier: ^8.2.0
         version: 8.2.0(@types/node@25.2.0)
-      global:
-        specifier: link:../../Library/pnpm/global/5/node_modules/global
-        version: link:../../Library/pnpm/global/5/node_modules/global
       meow:
         specifier: ^14.0.0
         version: 14.0.0
