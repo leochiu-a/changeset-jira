@@ -18,7 +18,7 @@ pnpm changeset init
 npx changeset-jira init
 ```
 
-This writes `.changeset/jira.json` at the repo root (even if you run the command in a subdirectory). You can also provide env vars instead:
+This writes `~/.changeset/jira.json` (global config). You can also provide env vars instead:
 
 ```bash
 export JIRA_BASE_URL="https://your-domain.atlassian.net"

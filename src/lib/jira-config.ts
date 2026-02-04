@@ -1,4 +1,5 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 
@@ -48,43 +49,50 @@ export async function getChangesetDir(): Promise<string> {
   return path.join(await getRepoRoot(), ".changeset");
 }
 
-export async function getJiraConfigPath(): Promise<string> {
+export function getHomeChangesetDir(): string {
+  return path.join(os.homedir(), ".changeset");
+}
+
+export function getHomeJiraConfigPath(): string {
+  return path.join(getHomeChangesetDir(), "jira.json");
+}
+
+export async function getRepoJiraConfigPath(): Promise<string> {
   return path.join(await getChangesetDir(), "jira.json");
 }
 
-export async function ensureChangesetDir(): Promise<void> {
-  await mkdir(await getChangesetDir(), { recursive: true });
+export async function ensureHomeChangesetDir(): Promise<void> {
+  await mkdir(getHomeChangesetDir(), { recursive: true });
 }
 
-export async function loadExistingJiraConfig(): Promise<JiraConfig | null> {
+async function loadJiraConfigFile(filePath: string): Promise<Partial<JiraConfig>> {
   try {
-    const raw = await readFile(await getJiraConfigPath(), "utf8");
-    const parsed = JSON.parse(raw) as JiraConfig;
-    if (!parsed || !parsed.baseUrl || !parsed.email || !parsed.apiToken) {
-      return null;
-    }
-    return parsed;
+    const raw = await readFile(filePath, "utf8");
+    return JSON.parse(raw) as Partial<JiraConfig>;
   } catch {
-    return null;
+    return {};
   }
 }
 
-export async function saveJiraConfig(config: JiraConfig): Promise<void> {
-  await writeFile(await getJiraConfigPath(), JSON.stringify(config, null, 2), "utf8");
+export async function loadExistingHomeJiraConfig(): Promise<JiraConfig | null> {
+  const parsed = (await loadJiraConfigFile(getHomeJiraConfigPath())) as JiraConfig;
+  if (!parsed || !parsed.baseUrl || !parsed.email || !parsed.apiToken) {
+    return null;
+  }
+  return parsed;
+}
+
+export async function saveHomeJiraConfig(config: JiraConfig): Promise<void> {
+  await writeFile(getHomeJiraConfigPath(), JSON.stringify(config, null, 2), "utf8");
 }
 
 export async function loadJiraConfig(): Promise<JiraConfig> {
-  let fileConfig: Partial<JiraConfig> = {};
-  try {
-    const raw = await readFile(await getJiraConfigPath(), "utf8");
-    fileConfig = JSON.parse(raw) as Partial<JiraConfig>;
-  } catch {
-    fileConfig = {};
-  }
+  const homeConfig = await loadJiraConfigFile(getHomeJiraConfigPath());
+  const repoConfig = await loadJiraConfigFile(await getRepoJiraConfigPath());
 
-  const baseUrl = process.env.JIRA_BASE_URL ?? fileConfig.baseUrl;
-  const email = process.env.JIRA_EMAIL ?? fileConfig.email;
-  const apiToken = process.env.JIRA_API_TOKEN ?? fileConfig.apiToken;
+  const baseUrl = process.env.JIRA_BASE_URL ?? homeConfig.baseUrl ?? repoConfig.baseUrl;
+  const email = process.env.JIRA_EMAIL ?? homeConfig.email ?? repoConfig.email;
+  const apiToken = process.env.JIRA_API_TOKEN ?? homeConfig.apiToken ?? repoConfig.apiToken;
 
   if (!baseUrl || !email || !apiToken) {
     throw new Error(
