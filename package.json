@@ -13,6 +13,7 @@
     "build": "tsdown --clean",
     "changeset": "changeset",
     "changeset-jira": "tsdown --clean --no-dts && node dist/changeset-jira.mjs",
+    "test": "vitest run",
     "release": "changeset publish",
     "version": "changeset version"
   },
@@ -20,7 +21,8 @@
     "@changesets/cli": "^2.29.8",
     "@types/node": "^25.2.0",
     "tsdown": "^0.20.1",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.2.0",
