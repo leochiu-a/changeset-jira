@@ -26,12 +26,20 @@ This writes `~/.changeset/jira.json` (global config).
 npx changeset-jira
 ```
 
+Create an empty changeset (no version bumps) but still link the Jira ticket:
+
+```bash
+npx changeset-jira --empty
+```
+
 What happens:
 
 - If a ticket ID is found in the branch name, it is used automatically. Otherwise the CLI asks for one.
 - It fetches the Jira summary and formats the description as `[PROJ-1234] {summary}`.
 - It runs the standard Changeset prompts for package selection and bump types.
 - The summary entered in the Changeset prompt is replaced with the Jira summary to enforce the required format.
+
+When `--empty` is used, Changesets skips package/bump prompts and creates an empty changeset with the Jira summary.
 
 Note: If you prefer local scripts, `pnpm changeset-jira` runs the same flow.
 
