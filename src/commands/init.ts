@@ -9,12 +9,13 @@ import {
 
 async function promptForBaseUrl(defaultValue?: string) {
   const candidate = await input({
-    message: "Jira base URL",
+    message: "Jira base URL (example: https://your-domain.atlassian.net)",
     default: defaultValue,
     validate: (value) => {
       if (!value) {
         return "Base URL is required. Example: https://your-domain.atlassian.net";
       }
+
       try {
         const url = new URL(value);
         if (!url.protocol.startsWith("http")) {
@@ -39,7 +40,8 @@ async function promptForEmail(defaultValue?: string) {
 
 async function promptForApiToken(defaultValue?: string) {
   const apiToken = await password({
-    message: "Jira API token",
+    message:
+      "Jira API token (create at https://id.atlassian.com/manage-profile/security/api-tokens)",
     mask: "*",
     validate: (value) => {
       if (value) {
@@ -55,16 +57,12 @@ async function promptForApiToken(defaultValue?: string) {
 }
 
 export async function runInit(): Promise<void> {
-  console.log("Initializing Jira credentials.");
+  console.log("Setting up Jira credentials for changeset-jira.");
   console.log("You will be asked for Jira base URL, email, and API token.");
-  console.log("Jira base URL example: https://your-domain.atlassian.net");
-  console.log(
-    "API token can be created at https://id.atlassian.com/manage-profile/security/api-tokens",
-  );
   console.log(
     "These values are stored in ~/.config/changeset-jira/jira.json (or $XDG_CONFIG_HOME/changeset-jira/jira.json).",
   );
-  console.log("Legacy ~/.changeset/jira.json is migrated to the new path and removed.");
+  console.log("");
 
   await ensureJiraConfigDir();
 
