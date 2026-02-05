@@ -88,10 +88,17 @@ export async function runChangesetAdd(
 
 export async function updateChangesetSummary(filePath: string, description: string): Promise<void> {
   const content = await readFile(filePath, "utf8");
-  const match = content.match(/^(---\s*\n[\s\S]*?\n---\s*\n)/);
+  // Support both populated and empty frontmatter (e.g. changeset add --empty).
+  const match = content.match(/^(---\s*\n[\s\S]*?---\s*\n)/);
   if (!match) {
     throw new Error(`Unexpected changeset format in ${filePath}.`);
   }
-  const updated = `${match[1]}${description}\n`;
+  const frontmatterMatch = match[1].match(/^---\s*\n([\s\S]*?)---\s*\n/);
+  if (!frontmatterMatch) {
+    throw new Error(`Unexpected changeset format in ${filePath}.`);
+  }
+  const frontmatterContent = frontmatterMatch[1];
+  const separator = frontmatterContent.trim().length === 0 ? "\n" : "";
+  const updated = `${match[1]}${separator}${description}\n`;
   await writeFile(filePath, updated, "utf8");
 }

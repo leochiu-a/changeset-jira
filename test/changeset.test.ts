@@ -27,4 +27,16 @@ describe("updateChangesetSummary", () => {
       "Unexpected changeset format",
     );
   });
+
+  it("supports empty changesets created with --empty", async () => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), "changeset-jira-"));
+    const filePath = path.join(dir, "empty.md");
+    const initial = `---\n---\n`;
+    await writeFile(filePath, initial, "utf8");
+
+    await updateChangesetSummary(filePath, "[GT-421] Empty summary");
+
+    const updated = await readFile(filePath, "utf8");
+    expect(updated).toBe(`---\n---\n\n[GT-421] Empty summary\n`);
+  });
 });
