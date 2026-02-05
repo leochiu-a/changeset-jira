@@ -1,9 +1,9 @@
 import { confirm, input, password } from "@inquirer/prompts";
 import {
-  ensureHomeChangesetDir,
-  getHomeJiraConfigPath,
-  loadExistingHomeJiraConfig,
-  saveHomeJiraConfig,
+  ensureJiraConfigDir,
+  getJiraConfigPath,
+  loadExistingJiraConfig,
+  saveJiraConfig,
   type JiraConfig
 } from "../lib/jira-config";
 
@@ -59,13 +59,14 @@ export async function runInit(): Promise<void> {
   console.log("You will be asked for Jira base URL, email, and API token.");
   console.log("Jira base URL example: https://your-domain.atlassian.net");
   console.log("API token can be created at https://id.atlassian.com/manage-profile/security/api-tokens");
-  console.log("These values are stored in ~/.changeset/jira.json.");
+  console.log("These values are stored in ~/.config/changeset-jira/jira.json (or $XDG_CONFIG_HOME/changeset-jira/jira.json).");
+  console.log("Legacy ~/.changeset/jira.json is migrated to the new path and removed.");
 
-  await ensureHomeChangesetDir();
+  await ensureJiraConfigDir();
 
-  const existingConfig = await loadExistingHomeJiraConfig();
-  const jiraConfigPath = getHomeJiraConfigPath();
-  if (existingConfig) {
+  const existingConfig = await loadExistingJiraConfig();
+  const jiraConfigPath = getJiraConfigPath();
+  if (existingConfig?.source === "primary") {
     const shouldOverwrite = await confirm({
       message: `Overwrite existing Jira config at ${jiraConfigPath}?`,
       default: false
@@ -75,12 +76,16 @@ export async function runInit(): Promise<void> {
       return;
     }
   }
+  if (existingConfig?.source === "legacy") {
+    console.log(`Found legacy Jira config at ${existingConfig.path}.`);
+    console.log(`New config will be saved to ${jiraConfigPath}.`);
+  }
 
-  const baseUrl = await promptForBaseUrl(existingConfig?.baseUrl);
-  const email = await promptForEmail(existingConfig?.email);
-  const apiToken = await promptForApiToken(existingConfig?.apiToken);
+  const baseUrl = await promptForBaseUrl(existingConfig?.config.baseUrl);
+  const email = await promptForEmail(existingConfig?.config.email);
+  const apiToken = await promptForApiToken(existingConfig?.config.apiToken);
 
   const payload: JiraConfig = { baseUrl, email, apiToken };
-  await saveHomeJiraConfig(payload);
+  await saveJiraConfig(payload);
   console.log(`Saved Jira config to ${jiraConfigPath}.`);
 }
