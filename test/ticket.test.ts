@@ -16,12 +16,7 @@ describe("ticket helpers", () => {
   it("validates description format and matching ticket ID", () => {
     const ticketId = "GT-421";
 
-    expect(
-      isValidDescription(
-        "[GT-421] Improve image transfer efficiency",
-        ticketId
-      )
-    ).toBe(true);
+    expect(isValidDescription("[GT-421] Improve image transfer efficiency", ticketId)).toBe(true);
 
     expect(isValidDescription("[GT-999] Something", ticketId)).toBe(false);
     expect(isValidDescription("[GT-421] multi\nline", ticketId)).toBe(false);

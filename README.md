@@ -46,6 +46,15 @@ When `--empty` is used, Changesets skips package/bump prompts and creates an emp
 
 Note: If you prefer local scripts, `pnpm changeset-jira` runs the same flow.
 
+## Lint & Format
+
+```bash
+pnpm lint
+pnpm lint:fix
+pnpm fmt
+pnpm fmt:check
+```
+
 ## Manual fallback
 
 If the Jira API fails or the summary does not match the required format, the CLI will ask you to enter the description manually. The input must be a single line in this format:

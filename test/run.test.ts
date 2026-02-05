@@ -3,19 +3,19 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 vi.mock("node:readline/promises", () => ({
   createInterface: vi.fn(() => ({
     close: vi.fn(),
-    question: vi.fn()
-  }))
+    question: vi.fn(),
+  })),
 }));
 
 vi.mock("../src/lib/changeset", () => ({
   ensureChangesetConfig: vi.fn(),
   listChangesetFiles: vi.fn(),
   runChangesetAdd: vi.fn(),
-  updateChangesetSummary: vi.fn()
+  updateChangesetSummary: vi.fn(),
 }));
 
 vi.mock("../src/lib/jira-api", () => ({
-  fetchJiraSummary: vi.fn()
+  fetchJiraSummary: vi.fn(),
 }));
 
 vi.mock("../src/lib/ticket", () => ({
@@ -23,7 +23,7 @@ vi.mock("../src/lib/ticket", () => ({
   getDefaultTicketId: vi.fn(),
   isValidDescription: vi.fn(),
   promptForDescription: vi.fn(),
-  promptForTicketId: vi.fn()
+  promptForTicketId: vi.fn(),
 }));
 
 const changeset = await import("../src/lib/changeset");
@@ -55,11 +55,11 @@ describe("runChangesetJira", () => {
     expect(ticket.promptForTicketId).not.toHaveBeenCalled();
     expect(jiraApi.fetchJiraSummary).toHaveBeenCalledWith("GT-421");
     expect(changeset.runChangesetAdd).toHaveBeenCalledWith("[GT-421] Improve perf", {
-      empty: false
+      empty: false,
     });
     expect(changeset.updateChangesetSummary).toHaveBeenCalledWith(
       "/repo/.changeset/new.md",
-      "[GT-421] Improve perf"
+      "[GT-421] Improve perf",
     );
   });
 
@@ -77,11 +77,11 @@ describe("runChangesetJira", () => {
     expect(ticket.promptForTicketId).toHaveBeenCalledWith(expect.any(Object), null);
     expect(ticket.promptForDescription).toHaveBeenCalled();
     expect(changeset.runChangesetAdd).toHaveBeenCalledWith("[GT-123] Manual summary", {
-      empty: false
+      empty: false,
     });
     expect(changeset.updateChangesetSummary).toHaveBeenCalledWith(
       "/repo/.changeset/new.md",
-      "[GT-123] Manual summary"
+      "[GT-123] Manual summary",
     );
   });
 
@@ -97,7 +97,7 @@ describe("runChangesetJira", () => {
     await runChangesetJira({ empty: true });
 
     expect(changeset.runChangesetAdd).toHaveBeenCalledWith("[GT-9] Docs only", {
-      empty: true
+      empty: true,
     });
   });
 });

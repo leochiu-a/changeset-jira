@@ -12,7 +12,7 @@ export async function getCurrentBranch(): Promise<string | null> {
   try {
     const { stdout } = await execFile("git", ["rev-parse", "--abbrev-ref", "HEAD"], {
       cwd: process.cwd(),
-      encoding: "utf8"
+      encoding: "utf8",
     });
     const branch = stdout.trim();
     return branch.length > 0 ? branch : null;
@@ -48,7 +48,7 @@ export function isValidDescription(description: string, ticketId: string): boole
 
 export async function promptForTicketId(
   rl: ReturnType<typeof createInterface>,
-  defaultTicketId: string | null
+  defaultTicketId: string | null,
 ) {
   const defaultLabel = defaultTicketId ? ` (default: ${defaultTicketId})` : "";
   while (true) {
@@ -67,7 +67,10 @@ export async function promptForTicketId(
   }
 }
 
-export async function promptForDescription(rl: ReturnType<typeof createInterface>, ticketId: string) {
+export async function promptForDescription(
+  rl: ReturnType<typeof createInterface>,
+  ticketId: string,
+) {
   const example = `[${ticketId}] Add concise summary`;
   while (true) {
     const input = (await rl.question(`Changeset description (${example}): `)).trim();

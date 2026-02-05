@@ -3,7 +3,7 @@ import {
   ensureChangesetConfig,
   listChangesetFiles,
   runChangesetAdd,
-  updateChangesetSummary
+  updateChangesetSummary,
 } from "../lib/changeset";
 import { fetchJiraSummary } from "../lib/jira-api";
 import {
@@ -11,7 +11,7 @@ import {
   getDefaultTicketId,
   isValidDescription,
   promptForDescription,
-  promptForTicketId
+  promptForTicketId,
 } from "../lib/ticket";
 
 export type RunChangesetJiraOptions = {
@@ -64,10 +64,10 @@ export async function runChangesetJira(options: RunChangesetJiraOptions = {}): P
     await runChangesetAdd(description, { empty });
     const after = await listChangesetFiles();
 
-    const newFiles = [...after].filter(file => !before.has(file));
+    const newFiles = [...after].filter((file) => !before.has(file));
     if (newFiles.length !== 1) {
       throw new Error(
-        "Unable to identify the newly created changeset file. Please update the summary manually."
+        "Unable to identify the newly created changeset file. Please update the summary manually.",
       );
     }
 

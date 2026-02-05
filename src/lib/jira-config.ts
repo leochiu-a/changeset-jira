@@ -35,7 +35,7 @@ async function findRepoRoot(startDir: string): Promise<string> {
   let current = path.resolve(startDir);
   while (true) {
     const matches = await Promise.all(
-      CANDIDATE_ROOT_FILES.map(candidate => pathExists(path.join(current, candidate)))
+      CANDIDATE_ROOT_FILES.map((candidate) => pathExists(path.join(current, candidate))),
     );
     if (matches.some(Boolean)) {
       return current;
@@ -100,7 +100,7 @@ function isCompleteConfig(config: Partial<JiraConfig>): config is JiraConfig {
 async function migrateLegacyConfigIfNeeded(
   legacyConfig: JiraConfig,
   legacyPath: string,
-  primaryPath: string
+  primaryPath: string,
 ): Promise<void> {
   const primaryExists = await isFilePresent(primaryPath);
   if (primaryExists) {
@@ -157,6 +157,6 @@ export async function loadJiraConfig(): Promise<JiraConfig> {
   }
 
   throw new Error(
-    `Missing Jira config. Run \`npx changeset-jira init\`. Checked ${primaryPath} and ${legacyPath}.`
+    `Missing Jira config. Run \`npx changeset-jira init\`. Checked ${primaryPath} and ${legacyPath}.`,
   );
 }

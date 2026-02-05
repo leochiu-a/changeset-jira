@@ -24,7 +24,7 @@ describe("updateChangesetSummary", () => {
     await writeFile(filePath, "no frontmatter\n", "utf8");
 
     await expect(updateChangesetSummary(filePath, "[GT-421] Some summary")).rejects.toThrow(
-      "Unexpected changeset format"
+      "Unexpected changeset format",
     );
   });
 });

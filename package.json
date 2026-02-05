@@ -1,32 +1,38 @@
 {
   "name": "changeset-jira",
   "version": "0.1.0",
-  "type": "module",
-  "packageManager": "pnpm@10.18.1",
-  "publishConfig": {
-    "access": "public"
-  },
   "bin": {
     "changeset-jira": "dist/changeset-jira.mjs"
+  },
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "tsdown --watch --no-dts",
     "build": "tsdown --clean",
     "changeset": "changeset",
     "changeset-jira": "tsdown --clean --no-dts && node dist/changeset-jira.mjs",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
     "test": "vitest run",
     "release": "changeset publish",
     "version": "changeset version"
   },
+  "dependencies": {
+    "@inquirer/prompts": "^8.2.0",
+    "meow": "^14.0.0"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
     "@types/node": "^25.2.0",
+    "oxfmt": "^0.28.0",
+    "oxlint": "^1.32.0",
     "tsdown": "^0.20.1",
     "typescript": "~5.9.3",
     "vitest": "^4.0.18"
   },
-  "dependencies": {
-    "@inquirer/prompts": "^8.2.0",
-    "meow": "^14.0.0"
-  }
+  "packageManager": "pnpm@10.18.1"
 }

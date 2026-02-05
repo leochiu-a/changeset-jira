@@ -15,10 +15,10 @@ async function main() {
       flags: {
         empty: {
           type: "boolean",
-          default: false
-        }
-      }
-    }
+          default: false,
+        },
+      },
+    },
   );
 
   const [command, ...rest] = cli.input;
@@ -27,7 +27,7 @@ async function main() {
     cli.showHelp(1);
     return;
   }
-  
+
   if (command === "init") {
     if (cli.flags.empty) {
       console.error("--empty cannot be used with init.");
@@ -37,7 +37,7 @@ async function main() {
     await runInit();
     return;
   }
-  
+
   if (command) {
     console.error(`Unknown command: ${command}`);
     cli.showHelp(1);
@@ -46,7 +46,7 @@ async function main() {
   await runChangesetJira({ empty: cli.flags.empty });
 }
 
-main().catch(error => {
+main().catch((error) => {
   const message = error instanceof Error ? error.message : String(error);
   console.error(message);
   process.exit(1);

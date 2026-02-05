@@ -27,7 +27,10 @@ async function parseJiraError(response: Response): Promise<string> {
       if (typeof payload.message === "string") {
         messages.push(payload.message);
       }
-      const detail = messages.map(message => message.trim()).filter(Boolean).join("; ");
+      const detail = messages
+        .map((message) => message.trim())
+        .filter(Boolean)
+        .join("; ");
       if (detail) {
         return detail;
       }
@@ -50,14 +53,16 @@ export async function fetchJiraSummary(ticketId: string): Promise<string> {
   const response = await fetch(issueUrl, {
     headers: {
       Authorization: `Basic ${authHeader}`,
-      Accept: "application/json"
-    }
+      Accept: "application/json",
+    },
   });
 
   if (!response.ok) {
     const detail = await parseJiraError(response);
     const detailSuffix = detail ? `: ${detail}` : "";
-    throw new Error(`Jira API request failed (${response.status} ${response.statusText})${detailSuffix}`);
+    throw new Error(
+      `Jira API request failed (${response.status} ${response.statusText})${detailSuffix}`,
+    );
   }
 
   const payload = (await response.json()) as JiraIssueResponse;

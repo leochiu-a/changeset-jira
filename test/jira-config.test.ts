@@ -7,7 +7,7 @@ import {
   ensureJiraConfigDir,
   getJiraConfigPath,
   loadJiraConfig,
-  saveJiraConfig
+  saveJiraConfig,
 } from "../src/lib/jira-config";
 
 describe("jira-config", () => {
@@ -52,12 +52,12 @@ describe("jira-config", () => {
         {
           baseUrl: "https://primary.atlassian.net",
           email: "primary@example.com",
-          apiToken: "primary-token"
+          apiToken: "primary-token",
         },
         null,
-        2
+        2,
       ),
-      "utf8"
+      "utf8",
     );
 
     const legacyPath = path.join(tempDir, ".changeset", "jira.json");
@@ -68,18 +68,18 @@ describe("jira-config", () => {
         {
           baseUrl: "https://legacy.atlassian.net",
           email: "legacy@example.com",
-          apiToken: "legacy-token"
+          apiToken: "legacy-token",
         },
         null,
-        2
+        2,
       ),
-      "utf8"
+      "utf8",
     );
 
     await expect(loadJiraConfig()).resolves.toEqual({
       baseUrl: "https://primary.atlassian.net",
       email: "primary@example.com",
-      apiToken: "primary-token"
+      apiToken: "primary-token",
     });
   });
 
@@ -95,18 +95,18 @@ describe("jira-config", () => {
         {
           baseUrl: "https://legacy.atlassian.net",
           email: "legacy@example.com",
-          apiToken: "legacy-token"
+          apiToken: "legacy-token",
         },
         null,
-        2
+        2,
       ),
-      "utf8"
+      "utf8",
     );
 
     await expect(loadJiraConfig()).resolves.toEqual({
       baseUrl: "https://legacy.atlassian.net",
       email: "legacy@example.com",
-      apiToken: "legacy-token"
+      apiToken: "legacy-token",
     });
 
     const primaryPath = path.join(xdgDir, "changeset-jira", "jira.json");
@@ -115,7 +115,7 @@ describe("jira-config", () => {
     expect(JSON.parse(raw)).toEqual({
       baseUrl: "https://legacy.atlassian.net",
       email: "legacy@example.com",
-      apiToken: "legacy-token"
+      apiToken: "legacy-token",
     });
     await expect(readFile(legacyPath, "utf8")).rejects.toThrow();
   });
@@ -128,7 +128,7 @@ describe("jira-config", () => {
     await saveJiraConfig({
       baseUrl: "https://save.atlassian.net",
       email: "save@example.com",
-      apiToken: "save-token"
+      apiToken: "save-token",
     });
 
     const savedPath = path.join(xdgDir, "changeset-jira", "jira.json");
@@ -137,7 +137,7 @@ describe("jira-config", () => {
     expect(JSON.parse(raw)).toEqual({
       baseUrl: "https://save.atlassian.net",
       email: "save@example.com",
-      apiToken: "save-token"
+      apiToken: "save-token",
     });
   });
 });

@@ -5,5 +5,5 @@ export default defineConfig({
   format: "esm",
   platform: "node",
   outDir: "dist",
-  dts: true
+  dts: true,
 });

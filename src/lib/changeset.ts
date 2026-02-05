@@ -20,10 +20,10 @@ export async function listChangesetFiles(): Promise<Set<string>> {
   const changesetDir = await getChangesetDir();
   const entries = await readdir(changesetDir, { withFileTypes: true });
   const files = entries
-    .filter(entry => entry.isFile())
-    .map(entry => entry.name)
-    .filter(name => name.endsWith(".md") && name !== "README.md")
-    .map(name => path.join(changesetDir, name));
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name)
+    .filter((name) => name.endsWith(".md") && name !== "README.md")
+    .map((name) => path.join(changesetDir, name));
   return new Set(files);
 }
 
@@ -33,12 +33,12 @@ export type RunChangesetAddOptions = {
 
 export async function runChangesetAdd(
   summary?: string,
-  options: RunChangesetAddOptions = {}
+  options: RunChangesetAddOptions = {},
 ): Promise<void> {
   const repoRoot = await getRepoRoot();
   const changesetBin = require.resolve("@changesets/cli/bin.js", { paths: [repoRoot] });
   const args = [changesetBin, "add"];
-  
+
   if (options.empty) {
     args.push("--empty");
   }
@@ -46,7 +46,7 @@ export async function runChangesetAdd(
   await new Promise<void>((resolve, reject) => {
     const child = spawn(process.execPath, args, {
       cwd: repoRoot,
-      stdio: ["pipe", "pipe", "pipe"]
+      stdio: ["pipe", "pipe", "pipe"],
     });
     let summaryInjected = false;
     let outputBuffer = "";
@@ -66,16 +66,16 @@ export async function runChangesetAdd(
     };
 
     process.stdin.pipe(child.stdin);
-    child.stdout.on("data", data => {
+    child.stdout.on("data", (data) => {
       process.stdout.write(data);
       maybeInjectSummary(String(data));
     });
-    child.stderr.on("data", data => {
+    child.stderr.on("data", (data) => {
       process.stderr.write(data);
       maybeInjectSummary(String(data));
     });
     child.on("error", reject);
-    child.on("exit", code => {
+    child.on("exit", (code) => {
       process.stdin.unpipe(child.stdin);
       if (code === 0) {
         resolve();
