@@ -7,11 +7,17 @@ async function main() {
   const cli = meow(
     `
   Usage:
-    $ changeset-jira init   # save Jira credentials locally
-    $ changeset-jira        # run changeset with Jira summary
+    $ changeset-jira init         # save Jira credentials locally
+    $ changeset-jira [--empty]    # run changeset with Jira summary
 `,
     {
-      importMeta: import.meta
+      importMeta: import.meta,
+      flags: {
+        empty: {
+          type: "boolean",
+          default: false
+        }
+      }
     }
   );
 
@@ -21,16 +27,23 @@ async function main() {
     cli.showHelp(1);
     return;
   }
+  
   if (command === "init") {
+    if (cli.flags.empty) {
+      console.error("--empty cannot be used with init.");
+      cli.showHelp(1);
+      return;
+    }
     await runInit();
     return;
   }
+  
   if (command) {
     console.error(`Unknown command: ${command}`);
     cli.showHelp(1);
   }
 
-  await runChangesetJira();
+  await runChangesetJira({ empty: cli.flags.empty });
 }
 
 main().catch(error => {

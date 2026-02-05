@@ -54,7 +54,9 @@ describe("runChangesetJira", () => {
 
     expect(ticket.promptForTicketId).not.toHaveBeenCalled();
     expect(jiraApi.fetchJiraSummary).toHaveBeenCalledWith("GT-421");
-    expect(changeset.runChangesetAdd).toHaveBeenCalledWith("[GT-421] Improve perf");
+    expect(changeset.runChangesetAdd).toHaveBeenCalledWith("[GT-421] Improve perf", {
+      empty: false
+    });
     expect(changeset.updateChangesetSummary).toHaveBeenCalledWith(
       "/repo/.changeset/new.md",
       "[GT-421] Improve perf"
@@ -74,10 +76,28 @@ describe("runChangesetJira", () => {
 
     expect(ticket.promptForTicketId).toHaveBeenCalledWith(expect.any(Object), null);
     expect(ticket.promptForDescription).toHaveBeenCalled();
-    expect(changeset.runChangesetAdd).toHaveBeenCalledWith("[GT-123] Manual summary");
+    expect(changeset.runChangesetAdd).toHaveBeenCalledWith("[GT-123] Manual summary", {
+      empty: false
+    });
     expect(changeset.updateChangesetSummary).toHaveBeenCalledWith(
       "/repo/.changeset/new.md",
       "[GT-123] Manual summary"
     );
+  });
+
+  it("passes --empty through to changeset add", async () => {
+    vi.mocked(ticket.getDefaultTicketId).mockResolvedValue("GT-9");
+    vi.mocked(jiraApi.fetchJiraSummary).mockResolvedValue("Docs only");
+    vi.mocked(ticket.formatSummary).mockReturnValue("Docs only");
+    vi.mocked(ticket.isValidDescription).mockReturnValue(true);
+    vi.mocked(changeset.listChangesetFiles)
+      .mockResolvedValueOnce(createSet(["/repo/.changeset/old.md"]))
+      .mockResolvedValueOnce(createSet(["/repo/.changeset/old.md", "/repo/.changeset/new.md"]));
+
+    await runChangesetJira({ empty: true });
+
+    expect(changeset.runChangesetAdd).toHaveBeenCalledWith("[GT-9] Docs only", {
+      empty: true
+    });
   });
 });

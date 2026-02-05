@@ -27,10 +27,22 @@ export async function listChangesetFiles(): Promise<Set<string>> {
   return new Set(files);
 }
 
-export async function runChangesetAdd(summary?: string): Promise<void> {
+export type RunChangesetAddOptions = {
+  empty?: boolean;
+};
+
+export async function runChangesetAdd(
+  summary?: string,
+  options: RunChangesetAddOptions = {}
+): Promise<void> {
   const repoRoot = await getRepoRoot();
   const changesetBin = require.resolve("@changesets/cli/bin.js", { paths: [repoRoot] });
   const args = [changesetBin, "add"];
+  
+  if (options.empty) {
+    args.push("--empty");
+  }
+
   await new Promise<void>((resolve, reject) => {
     const child = spawn(process.execPath, args, {
       cwd: repoRoot,
