@@ -14,9 +14,14 @@ import {
   promptForTicketId
 } from "../lib/ticket";
 
-export async function runChangesetJira(): Promise<void> {
+export type RunChangesetJiraOptions = {
+  empty?: boolean;
+};
+
+export async function runChangesetJira(options: RunChangesetJiraOptions = {}): Promise<void> {
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   try {
+    const { empty = false } = options;
     await ensureChangesetConfig();
 
     const defaultTicketId = await getDefaultTicketId();
@@ -48,11 +53,15 @@ export async function runChangesetJira(): Promise<void> {
     }
 
     console.log(`Using changeset summary: ${description}`);
-    console.log("Running changeset add. Follow the prompts for packages and bump types.");
+    if (empty) {
+      console.log("Running changeset add with --empty. No version bump will be recorded.");
+    } else {
+      console.log("Running changeset add. Follow the prompts for packages and bump types.");
+    }
     console.log("Note: the summary prompt will be auto-filled and replaced with the Jira summary.");
 
     const before = await listChangesetFiles();
-    await runChangesetAdd(description);
+    await runChangesetAdd(description, { empty });
     const after = await listChangesetFiles();
 
     const newFiles = [...after].filter(file => !before.has(file));
