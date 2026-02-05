@@ -18,7 +18,10 @@ pnpm changeset init
 npx changeset-jira init
 ```
 
-This writes `~/.changeset/jira.json` (global config).
+This writes `~/.config/changeset-jira/jira.json` (global config). If `XDG_CONFIG_HOME` is set, it uses
+`$XDG_CONFIG_HOME/changeset-jira/jira.json`. If a legacy `~/.changeset/jira.json` is found, the CLI will
+migrate it to the new path on first run (and remove the legacy file). Legacy reads will be removed in a
+future release.
 
 ## Usage
 
