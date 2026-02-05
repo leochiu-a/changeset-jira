@@ -51,6 +51,7 @@ Note: If you prefer local scripts, `pnpm changeset-jira` runs the same flow.
 ```bash
 pnpm lint
 pnpm lint:fix
+pnpm lint-staged
 pnpm fmt
 pnpm fmt:check
 ```
