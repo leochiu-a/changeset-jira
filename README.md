@@ -4,6 +4,8 @@
 
 `[PROJ-1234] Description.`
 
+![](./public/demo.gif)
+
 ## Setup
 
 1. Initialize Changesets (if not already done):
